@@ -1,5 +1,6 @@
 import HttpError from "../helpers/httpError.js";
-import Contact from "../models/contact.js";
+
+import Contact from "../models/Contact.js"; // eslint-disable-line
 
 const getAllContacts = async (req, res, next) => {
   try {

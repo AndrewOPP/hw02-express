@@ -2,7 +2,7 @@ import {
   contactPostSchema,
   contactUpdateSchema,
   contactFavoriteSchema,
-} from "../models/contact.js";
+} from "../models/Contact.js";
 
 export default {
   contactPostSchema,
