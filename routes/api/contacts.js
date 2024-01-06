@@ -4,7 +4,11 @@ import isEmptyBody from "../../middlewares/isEmptyBody.js";
 import isValidId from "../../middlewares/isValidId.js";
 import validateBody from "../../decorators/validateBody.js";
 import contactSchemas from "../../schemas/contact-schemas.js";
+import { authenticate } from "../../middlewares/authenticate.js";
+
 const router = express.Router();
+
+router.use(authenticate);
 
 router.get("/", contactsController.getAllContacts);
 

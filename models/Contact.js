@@ -15,11 +15,20 @@ const contactSchema = new Schema(
     },
     phone: {
       type: String,
+      unique: true,
       match: [phoneRegexp, "Phone must have such format: (xxx) xxx-xxxx"],
     },
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+
+      ref: "user",
+    },
+    token: {
+      type: String,
     },
   },
   { versionKey: false }
