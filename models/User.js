@@ -31,9 +31,6 @@ userSchema.post("findOneAndUpdate", handleSaveError);
 export const userSingupSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().required(),
-  subscription: Joi.string()
-    .valid("starter", "pro", "business")
-    .default("starter"),
 });
 
 export const updateSubscription = Joi.object({
