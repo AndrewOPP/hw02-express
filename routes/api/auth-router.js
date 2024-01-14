@@ -5,11 +5,13 @@ import contactSchemas from "../../schemas/contact-schemas.js";
 import isEmptyBody from "../../middlewares/isEmptyBody.js";
 import {
   updateSubscription,
+  updateUserAvatar,
   userSinginSchema,
   userSingupSchema,
 } from "../../models/User.js";
 import authController from "../../controllers/auth-controller.js";
 import { authenticate } from "../../middlewares/authenticate.js";
+import upload from "../../middlewares/upload.js";
 
 const authRouter = express.Router();
 
@@ -35,6 +37,13 @@ authRouter.patch(
   isEmptyBody,
   validateBody(updateSubscription),
   authController.updateUserSubscription
+);
+
+authRouter.patch(
+  "/users/avatars",
+  upload.single("avatar"),
+  authenticate,
+  authController.updateUserAvatar
 );
 
 authRouter.post("/signout", authenticate, authController.signout);

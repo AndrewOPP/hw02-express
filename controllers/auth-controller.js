@@ -2,7 +2,10 @@ import HttpError from "../helpers/httpError.js";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import fs from "fs/promises";
+import path from "path";
+import gravatar from "gravatar";
+import Jimp from "jimp";
 const { SECRET_KEY } = process.env;
 
 const signup = async (req, res, next) => {
@@ -13,10 +16,13 @@ const signup = async (req, res, next) => {
     if (user) {
       throw HttpError(409, "User with such email is already registered");
     }
-
     const hashPass = await bcrypt.hash(password, 10);
-
-    const newUser = await User.create({ ...req.body, password: hashPass });
+    const avatar = gravatar.url(email);
+    const newUser = await User.create({
+      ...req.body,
+      password: hashPass,
+      avatarURL: avatar,
+    });
 
     res.status(201).json({
       user: {
@@ -95,8 +101,38 @@ const updateUserSubscription = async (req, res, next) => {
   try {
     const { _id: id } = req.user;
     await User.findByIdAndUpdate(id, req.body);
+
     res.json({
       message: "Subscription updated",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const avatarsPath = path.resolve("public", "avatars");
+
+const updateUserAvatar = async (req, res, next) => {
+  try {
+    const { path: oldPath, filename } = req.file;
+    const { _id: id } = req.user;
+    const newPath = path.join(avatarsPath, filename);
+
+    Jimp.read(oldPath)
+      .then((image) => {
+        return image.resize(250, 250).write(newPath);
+      })
+      .catch((err) => {
+        throw HttpError(400, "Cant resize that img");
+      });
+
+    await fs.rename(oldPath, newPath);
+
+    const avatar = path.join("avatars", filename);
+    req.body.avatarURL = avatar;
+    await User.findByIdAndUpdate(id, req.body);
+    res.json({
+      message: "Avatar added",
     });
   } catch (error) {
     next(error);
@@ -109,4 +145,5 @@ export default {
   getCurrent,
   signout,
   updateUserSubscription,
+  updateUserAvatar,
 };
