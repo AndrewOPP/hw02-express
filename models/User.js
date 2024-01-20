@@ -17,6 +17,13 @@ const userSchema = new Schema(
       enum: ["starter", "pro", "business"],
       default: "starter",
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: {
+      type: String,
+    },
     avatarURL: String,
     token: String,
   },
@@ -45,6 +52,10 @@ export const updateUserAvatar = Joi.object({
 export const userSinginSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().required(),
+});
+
+export const userEmailSchema = Joi.object({
+  email: Joi.string().required(),
 });
 
 const User = model("user", userSchema);

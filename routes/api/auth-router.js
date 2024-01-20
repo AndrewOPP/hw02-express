@@ -6,6 +6,7 @@ import isEmptyBody from "../../middlewares/isEmptyBody.js";
 import {
   updateSubscription,
   updateUserAvatar,
+  userEmailSchema,
   userSinginSchema,
   userSingupSchema,
 } from "../../models/User.js";
@@ -44,6 +45,15 @@ authRouter.patch(
   upload.single("avatar"),
   authenticate,
   authController.updateUserAvatar
+);
+
+authRouter.get("/verify/:verificationCode", authController.verify);
+
+authRouter.post(
+  "/verify",
+  isEmptyBody,
+  validateBody(userEmailSchema),
+  authController.resendVerifyEmail
 );
 
 authRouter.post("/signout", authenticate, authController.signout);
